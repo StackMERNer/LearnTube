@@ -1,6 +1,11 @@
+import { getSession } from "@auth0/nextjs-auth0";
 import React from "react";
+import Link from "next/link"; // Import Link for navigation
 
-const NavBar = () => {
+const NavBar = async () => {
+  const session = await getSession();
+  const user = session?.user;
+
   return (
     <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
@@ -38,9 +43,28 @@ const NavBar = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <a className="btn btn-ghost text-xl">LearnTube</a>
       </div>
       <div className="navbar-end">
+        {user ? (
+          // If user is signed in, show their name and a logout button
+          <div className="flex items-center">
+            <span className="mr-2">Welcome, {user.name}!</span>
+            <Link href="/api/auth/logout" className="btn btn-ghost">
+              Logout
+            </Link>
+          </div>
+        ) : (
+          // If user is not signed in, show login/signup buttons
+          <div>
+            <Link href="/api/auth/login" className="btn btn-ghost">
+              Login
+            </Link>
+            {/* <Link href="/api/auth/signup" className="btn btn-ghost ml-2">
+              Signup
+            </Link> */}
+          </div>
+        )}
         <button className="btn btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
