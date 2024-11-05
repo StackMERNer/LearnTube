@@ -51,9 +51,9 @@ const NavBar = () => {
     }
   }, [user, isLoading, setUser]); // Add setUser to the dependency array
 
-  if (isLoading) {
-    return <div>Loading...</div>; // Show loading state while fetching user data
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>; // Show loading state while fetching user data
+  // }
 
   return (
     <>

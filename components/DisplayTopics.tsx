@@ -1,5 +1,7 @@
 "use client";
+import useUserStore from "@/stores/useUserStore";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface Topic {
   _id: string;
@@ -17,6 +19,7 @@ const DisplayTopics = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
+  const { user } = useUserStore();
 
   // Fetch topics and playlists on mount
   useEffect(() => {
@@ -36,7 +39,10 @@ const DisplayTopics = () => {
   // Add selected playlist to a topic
   const handleAddPlaylist = async (topicId: string) => {
     // if (!selectedPlaylist) return;
-
+    if (!user) {
+      toast.error("Please Sing in first");
+      return;
+    }
     const response = await fetch(`/api/playlists`, {
       method: "POST",
       headers: {
@@ -46,8 +52,10 @@ const DisplayTopics = () => {
         playlistUrl:
           "https://www.youtube.com/watch?v=crfH_JuC2lI&list=PLgGbWId6zgaU8BM9JYUmyMO2I0TUcUCc_&ab_channel=EnvatoTuts%2B",
         topicId,
+        user: user._id,
       }),
     });
+    console.log("response", response);
 
     if (response.ok) {
       const updatedTopic = await response.json();
