@@ -1,18 +1,35 @@
-// // /app/api/topics/route.ts
-// import { NextResponse } from 'next/server';
-// import connectDB from '../../../lib/mongodb';
-// import Topic from '../../../models/Topic';
+import connectDB from "@/app/lib/mongodb";
+import Topic from "@/app/models/Topic";
+import { NextResponse } from "next/server";
 
-// export async function POST(request: Request) {
-//   await connectDB();
-//   const { name, playlists } = await request.json();
-//   const newTopic = new Topic({ name, playlists });
-//   await newTopic.save();
-//   return NextResponse.json(newTopic, { status: 201 });
-// }
+export const GET = async () => {
+  try {
+    await connectDB();
+    const topics = await Topic.find({});
+    return NextResponse.json(topics);
+  } catch (error) {
+    console.error("Error fetching topics:", error);
+    return NextResponse.json({ message: "Failed to fetch topics" }, { status: 500 });
+  }
+};
 
-// export async function GET() {
-//   await connectDB();
-//   const topics = await Topic.find().populate('playlists');
-//   return NextResponse.json(topics);
-// }
+export const POST = async (req: Request) => {
+  try {
+    const { title } = await req.json();
+    await connectDB();
+    
+    // Validate input
+    if (!title) {
+      return NextResponse.json({ message: "Title is required" }, { status: 400 });
+    }
+
+    // Create a new topic
+    const newTopic = new Topic({ title });
+    await newTopic.save();
+    
+    return NextResponse.json(newTopic, { status: 201 });
+  } catch (error) {
+    console.error("Error adding new topic:", error);
+    return NextResponse.json({ message: "Failed to add topic" }, { status: 500 });
+  }
+};

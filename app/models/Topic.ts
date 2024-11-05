@@ -1,8 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const TopicSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }]
-});
+const TopicSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    description: { type: String },
+    title: { type: String, required: true },
+    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }],
+  },
+  { timestamps: true }
+);
 
-export default mongoose.models.Topic || mongoose.model('Topic', TopicSchema);
+export default mongoose.models.Topic || mongoose.model("Topic", TopicSchema);
