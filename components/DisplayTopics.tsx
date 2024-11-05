@@ -88,7 +88,7 @@ const DisplayTopics = () => {
     }
 
     try {
-      const response = await fetch(`/api/user/learning-playlists`, {
+      const response = await fetch(`/api/users/${user._id}/learning-playlists`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

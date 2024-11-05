@@ -2,7 +2,7 @@ import User from "@/app/models/User";
 
 // Function to add a playlist ID to the user's current playlists
 export const addToCurrentPlaylists = async (userId: string, playlistId: string) => {
-  console.log('userid',userId,playlistId)
+  // console.log('userid',userId,playlistId)
   return await User.findByIdAndUpdate(
     userId,
     { $addToSet: { learningPlaylists: playlistId } }, // Add the playlist ID if it doesn't already exist
