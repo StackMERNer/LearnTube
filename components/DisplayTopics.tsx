@@ -80,7 +80,37 @@ const DisplayTopics = () => {
       toast.error("Error adding playlist to topic");
     }
   };
+  // Handle "Start Learning" button click
+  const handleStartLearning = async (playlistId: string) => {
+    if (!user) {
+      toast.error("Please sign in first");
+      return;
+    }
 
+    try {
+      const response = await fetch(`/api/user/learning-playlists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          playlistId,
+        }),
+      });
+
+      console.log('response',response)
+
+      if (!response.ok) throw new Error("Error starting to learn");
+
+      const res = await response.json();
+      toast.success("Started learning this playlist!");
+      console.log("Start Learning Response:", res);
+    } catch (error) {
+      console.error("Error starting learning:", error);
+      toast.error("Error starting to learn this playlist");
+    }
+  };
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Topics</h2>
@@ -106,7 +136,12 @@ const DisplayTopics = () => {
                       className="h-auto w-auto"
                     />
                     <h1>{playlist ? playlist.title : "Unknown Playlist"}</h1>
-                    <button className="btn btn-primary">Start Learning</button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleStartLearning(playlist.playlistId)}
+                    >
+                      Start Learning
+                    </button>
                   </div>
                 </div>
               ))}

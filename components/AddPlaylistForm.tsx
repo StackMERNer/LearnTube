@@ -19,7 +19,7 @@ const AddPlaylistForm = ({ topicId }: { topicId: string }) => {
       if (!response.ok)
         throw new Error(result.message || "Failed to add playlist");
       console.log("Playlist added successfully:", result);
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error adding playlist:", error);
       alert(error.message || "Failed to add playlist");
     }
