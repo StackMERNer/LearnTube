@@ -3,9 +3,11 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import React, { useEffect } from "react";
 import Link from "next/link"; // Import Link for navigation
 import { toast, Toaster } from "react-hot-toast"; // Import toast and Toaster
+import useUserStore from "../stores/useUserStore"; // Import your Zustand store
 
 const NavBar = () => {
   const { user, error, isLoading } = useUser();
+  const { setUser } = useUserStore(); // Get setUser from Zustand store
 
   useEffect(() => {
     const sendUserData = async () => {
@@ -31,6 +33,10 @@ const NavBar = () => {
           const data = await response.json();
           console.log("User data processed:", data.message); // Log the success message
           console.log("User information:", data.user); // Log the user data
+
+          // Set the user data in Zustand store
+          setUser(data.user);
+
           toast.success("User data sent successfully!"); // Show success message
         } catch (error) {
           console.error("Error sending user data:", error);
@@ -43,7 +49,7 @@ const NavBar = () => {
     if (!isLoading && user) {
       sendUserData();
     }
-  }, [user, isLoading]); // Dependency array to trigger useEffect when user or loading state changes
+  }, [user, isLoading, setUser]); // Add setUser to the dependency array
 
   if (isLoading) {
     return <div>Loading...</div>; // Show loading state while fetching user data

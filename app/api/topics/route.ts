@@ -9,27 +9,36 @@ export const GET = async () => {
     return NextResponse.json(topics);
   } catch (error) {
     console.error("Error fetching topics:", error);
-    return NextResponse.json({ message: "Failed to fetch topics" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch topics" },
+      { status: 500 }
+    );
   }
 };
 
 export const POST = async (req: Request) => {
   try {
-    const { title } = await req.json();
+    const { title, user } = await req.json();
     await connectDB();
-    
+
     // Validate input
     if (!title) {
-      return NextResponse.json({ message: "Title is required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Title is required" },
+        { status: 400 }
+      );
     }
 
     // Create a new topic
-    const newTopic = new Topic({ title });
+    const newTopic = new Topic({ title, user });
     await newTopic.save();
-    
+
     return NextResponse.json(newTopic, { status: 201 });
   } catch (error) {
     console.error("Error adding new topic:", error);
-    return NextResponse.json({ message: "Failed to add topic" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to add topic" },
+      { status: 500 }
+    );
   }
 };

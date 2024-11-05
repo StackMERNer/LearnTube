@@ -1,22 +1,29 @@
 "use client";
+import useUserStore from "@/stores/useUserStore";
+
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const AddTopicForm = () => {
   const [title, setTitle] = useState("");
-
+  //   const { user, error, isLoading } = useUser();
+  const { user } = useUserStore();
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!user) {
+      return toast.error("Sing in first");
+    }
     e.preventDefault();
-    const response = await fetch('/api/topics', {
-      method: 'POST',
+    const response = await fetch("/api/topics", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify({ title, user: user._id }),
     });
-  
+
     if (response.ok) {
-      setTitle('');
-      alert('Topic added successfully!');
+      setTitle("");
+      alert("Topic added successfully!");
     } else {
       const errorData = await response.json();
       alert(`Error: ${errorData.message}`);
