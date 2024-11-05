@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 interface Topic {
   _id: string;
   title: string;
-  playlists: IPlaylist[]; // Array of playlist IDs
+  playlists: IPlaylist[];
 }
 
 const DisplayTopics = () => {
@@ -15,6 +15,7 @@ const DisplayTopics = () => {
   // const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const { user } = useUserStore();
+  const [targetTopicId,setTargetTopicId] = useState<string | null>(null);
 
   // Fetch topics and playlists on mount
   useEffect(() => {
@@ -29,16 +30,6 @@ const DisplayTopics = () => {
         console.error("Error fetching topics:", error);
         toast.error("Failed to load topics");
       }
-
-      // try {
-      //   const playlistsResponse = await fetch("/api/playlists");
-      //   if (!playlistsResponse.ok) throw new Error("Failed to fetch playlists");
-      //   const playlistsData = await playlistsResponse.json();
-      //   setPlaylists(playlistsData);
-      // } catch (error) {
-      //   console.error("Error fetching playlists:", error);
-      //   toast.error("Failed to load playlists");
-      // }
     };
 
     fetchData();
@@ -106,20 +97,7 @@ const DisplayTopics = () => {
 
           {/* Playlist selection form */}
           <div className="flex items-center mt-4">
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={selectedPlaylist || ""}
-              onChange={(e) => setSelectedPlaylist(e.target.value)}
-            >
-              <option value="" disabled>
-                Select a playlist to add
-              </option>
-              {/* {playlists.map((playlist) => (
-                <option key={playlist._id} value={playlist._id}>
-                  {playlist.title}
-                </option>
-              ))} */}
-            </select>
+            
             <button
               className="btn btn-primary ml-2"
               onClick={() => handleAddPlaylist(topic._id)}
