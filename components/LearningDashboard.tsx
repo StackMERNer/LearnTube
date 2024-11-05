@@ -61,10 +61,16 @@ const LearningDashboard = () => {
                       alt={video.title}
                       className="w-12 h-12 object-cover rounded"
                     />
-                    <div>
+                    <div className="flex-1">
                       <p className="text-md font-semibold">{video.title}</p>
                       <p className="text-sm text-gray-500">Position: {video.position}</p>
                     </div>
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      onClick={() => window.open(`https://www.youtube.com/watch?v=${video.videoId}`, '_blank')}
+                    >
+                      Watch
+                    </button>
                   </li>
                 ))}
               </ul>
