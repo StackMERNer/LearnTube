@@ -24,7 +24,6 @@ const DisplayTopics = () => {
         const topicsResponse = await fetch("/api/topics");
         if (!topicsResponse.ok) throw new Error("Failed to fetch topics");
         const topicsData = await topicsResponse.json();
-        console.log("topicsData", topicsData);
         setTopics(topicsData);
       } catch (error) {
         console.error("Error fetching topics:", error);
