@@ -12,12 +12,11 @@ interface Topic {
 
 const DisplayTopics = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
-  // const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
+  const [playlistUrl, setPlaylistUrl] = useState<string>(""); // State for input field
   const { user } = useUserStore();
-  const [targetTopicId,setTargetTopicId] = useState<string | null>(null);
+  // const [targetTopicId, setTargetTopicId] = useState<string | null>(null);
 
-  // Fetch topics and playlists on mount
+  // Fetch topics on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,12 +34,17 @@ const DisplayTopics = () => {
     fetchData();
   }, []);
 
-  // Add selected playlist to a topic
+  // Add playlist to a topic
   const handleAddPlaylist = async (topicId: string) => {
     if (!user) {
       toast.error("Please sign in first");
       return;
     }
+    if (!playlistUrl) {
+      toast.error("Please enter a playlist URL");
+      return;
+    }
+
     try {
       const response = await fetch(`/api/playlists`, {
         method: "POST",
@@ -48,8 +52,7 @@ const DisplayTopics = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          playlistUrl:
-            "https://www.youtube.com/watch?v=crfH_JuC2lI&list=PLgGbWId6zgaU8BM9JYUmyMO2I0TUcUCc_&ab_channel=EnvatoTuts%2B",
+          playlistUrl,
           topicId,
           user: user._id,
         }),
@@ -57,13 +60,19 @@ const DisplayTopics = () => {
 
       if (!response.ok) throw new Error("Error adding playlist to topic");
 
-      const updatedTopic = await response.json();
-      setTopics((prevTopics) =>
-        prevTopics.map((topic) =>
-          topic._id === topicId ? { ...topic, ...updatedTopic } : topic
-        )
-      );
-      setSelectedPlaylist(null);
+      const res = await response.json();
+      console.log("updatedTopic", res);
+      if (res.data) {
+        setTopics((prevTopics) =>
+          prevTopics.map((topic) =>
+            topic._id === topicId
+              ? { ...topic, playlists: [...topic.playlists, res.data] }
+              : topic
+          )
+        );
+      }
+
+      setPlaylistUrl(""); // Clear input field after adding
       toast.success("Playlist added successfully!");
     } catch (error) {
       console.error("Error adding playlist:", error);
@@ -85,23 +94,26 @@ const DisplayTopics = () => {
           <div className="mb-2">
             <strong>Playlists:</strong>
             <ul className="list-disc list-inside">
-              {topic.playlists.map((playlist, idx) => {
-                return (
-                  <li key={idx}>
-                    {playlist ? playlist.title : "Unknown Playlist"}
-                  </li>
-                );
-              })}
+              {topic.playlists.map((playlist, idx) => (
+                <li key={idx}>
+                  {playlist ? playlist.title : "Unknown Playlist"}
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Playlist selection form */}
+          {/* Playlist input field and button */}
           <div className="flex items-center mt-4">
-            
+            <input
+              type="text"
+              className="input input-bordered w-full max-w-xs"
+              placeholder="Enter Playlist URL"
+              value={playlistUrl}
+              onChange={(e) => setPlaylistUrl(e.target.value)}
+            />
             <button
               className="btn btn-primary ml-2"
               onClick={() => handleAddPlaylist(topic._id)}
-              disabled={!selectedPlaylist}
             >
               Add Playlist
             </button>
