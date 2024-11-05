@@ -21,29 +21,25 @@ export const POST = async (req: Request) => {
     let nextPageToken: string | undefined = "";
 
     do {
-      const url: string = `https://youtube-v31.p.rapidapi.com/playlistItems?playlistId=${playlistId}&part=snippet&maxResults=50&pageToken=${nextPageToken}`;
-
+      const url:string = `https://youtube-v31.p.rapidapi.com/playlistItems?playlistId=${playlistId}&part=snippet&maxResults=50&pageToken=${nextPageToken}`;
       const response = await fetch(url, { headers });
       const data = await response.json();
 
-      if (!data || !data.items)
-        throw new Error("Failed to retrieve playlist information");
+      if (!data || !data.items) throw new Error("Failed to retrieve playlist information");
 
       // Extract relevant data for each video
       const videoItems: IVideo[] = data.items.map((item: any) => ({
         videoId: item.snippet.resourceId.videoId,
         title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.default.url, // or use another quality if preferred
+        thumbnail: item.snippet.thumbnails.default.url,
         position: item.snippet.position,
       }));
 
       videos = videos.concat(videoItems);
-
-      // Set nextPageToken for the next iteration (if there's more data)
       nextPageToken = data.nextPageToken;
     } while (nextPageToken);
 
-    // Now fetch playlist details separately (for title, description, etc.)
+    // Fetch playlist details separately
     const playlistDetailsUrl = `https://youtube-v31.p.rapidapi.com/playlists?part=snippet&id=${playlistId}`;
     const playlistResponse = await fetch(playlistDetailsUrl, { headers });
     const playlistData = await playlistResponse.json();
@@ -56,30 +52,34 @@ export const POST = async (req: Request) => {
       playlistId,
       title: playlistData.items[0].snippet.title,
       description: playlistData.items[0].snippet.description,
-      thumbnail: playlistData.items[0].snippet.thumbnails.default.url, // select preferred quality
-      videos, // All video info collected above
+      thumbnail: playlistData.items[0].snippet.thumbnails.default.url,
+      videos,
     };
 
     await connectDB();
 
-    // Create playlist entry in the database
-    const newPlaylist = await Playlist.create(playlistInfo);
+    // Check if playlist exists and update or create
+    const updatedPlaylist = await Playlist.findOneAndUpdate(
+      { playlistId },
+      playlistInfo, // replace with the new playlistInfo document
+      { new: true, upsert: true } // upsert creates a new document if none is found
+    );
 
-    // Update the topic with the new playlist ID
+    // Ensure playlist ID is in topic
     await Topic.findByIdAndUpdate(topicId, {
-      $push: { playlists: newPlaylist._id },
+      $addToSet: { playlists: updatedPlaylist._id },
     });
 
     return NextResponse.json({
-      message: "Playlist and videos added successfully",
-      data: newPlaylist,
+      message: updatedPlaylist.wasNew ? "Playlist created successfully" : "Playlist updated successfully",
+      data: updatedPlaylist,
     });
   } catch (error) {
-    console.error("Error adding playlist:", error);
+    console.error("Error adding or updating playlist:", error);
     return NextResponse.json(
       {
         message:
-          error instanceof Error ? error.message : "Failed to add playlist",
+          error instanceof Error ? error.message : "Failed to add or update playlist",
       },
       { status: 500 }
     );

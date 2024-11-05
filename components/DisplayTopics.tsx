@@ -1,4 +1,5 @@
 "use client";
+import { IPlaylist } from "@/app/models/Playlist";
 import useUserStore from "@/stores/useUserStore";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -6,31 +7,38 @@ import toast from "react-hot-toast";
 interface Topic {
   _id: string;
   title: string;
-  playlists: string[]; // Array of playlist IDs
-}
-
-interface Playlist {
-  _id: string;
-  title: string;
+  playlists: IPlaylist[]; // Array of playlist IDs
 }
 
 const DisplayTopics = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  // const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const { user } = useUserStore();
 
   // Fetch topics and playlists on mount
   useEffect(() => {
     const fetchData = async () => {
-      const topicsResponse = await fetch("/api/topics");
-      const topicsData = await topicsResponse.json();
-      setTopics(topicsData);
+      try {
+        const topicsResponse = await fetch("/api/topics");
+        if (!topicsResponse.ok) throw new Error("Failed to fetch topics");
+        const topicsData = await topicsResponse.json();
+        console.log("topicsData", topicsData);
+        setTopics(topicsData);
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+        toast.error("Failed to load topics");
+      }
 
-      const playlistsResponse = await fetch("/api/playlists");
-      const playlistsData = await playlistsResponse.json();
-      setPlaylists(playlistsData);
+      // try {
+      //   const playlistsResponse = await fetch("/api/playlists");
+      //   if (!playlistsResponse.ok) throw new Error("Failed to fetch playlists");
+      //   const playlistsData = await playlistsResponse.json();
+      //   setPlaylists(playlistsData);
+      // } catch (error) {
+      //   console.error("Error fetching playlists:", error);
+      //   toast.error("Failed to load playlists");
+      // }
     };
 
     fetchData();
@@ -38,36 +46,37 @@ const DisplayTopics = () => {
 
   // Add selected playlist to a topic
   const handleAddPlaylist = async (topicId: string) => {
-    // if (!selectedPlaylist) return;
     if (!user) {
-      toast.error("Please Sing in first");
+      toast.error("Please sign in first");
       return;
     }
-    const response = await fetch(`/api/playlists`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        playlistUrl:
-          "https://www.youtube.com/watch?v=crfH_JuC2lI&list=PLgGbWId6zgaU8BM9JYUmyMO2I0TUcUCc_&ab_channel=EnvatoTuts%2B",
-        topicId,
-        user: user._id,
-      }),
-    });
-    console.log("response", response);
+    try {
+      const response = await fetch(`/api/playlists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          playlistUrl:
+            "https://www.youtube.com/watch?v=crfH_JuC2lI&list=PLgGbWId6zgaU8BM9JYUmyMO2I0TUcUCc_&ab_channel=EnvatoTuts%2B",
+          topicId,
+          user: user._id,
+        }),
+      });
 
-    if (response.ok) {
+      if (!response.ok) throw new Error("Error adding playlist to topic");
+
       const updatedTopic = await response.json();
-      console.log(updatedTopic);
-      //   setTopics((prevTopics) =>
-      //     prevTopics.map((topic) =>
-      //       topic._id === topicId ? updatedTopic : topic
-      //     )
-      //   );
+      setTopics((prevTopics) =>
+        prevTopics.map((topic) =>
+          topic._id === topicId ? { ...topic, ...updatedTopic } : topic
+        )
+      );
       setSelectedPlaylist(null);
-    } else {
-      alert("Error adding playlist to topic");
+      toast.success("Playlist added successfully!");
+    } catch (error) {
+      console.error("Error adding playlist:", error);
+      toast.error("Error adding playlist to topic");
     }
   };
 
@@ -85,10 +94,9 @@ const DisplayTopics = () => {
           <div className="mb-2">
             <strong>Playlists:</strong>
             <ul className="list-disc list-inside">
-              {topic.playlists.map((playlistId) => {
-                const playlist = playlists.find((pl) => pl._id === playlistId);
+              {topic.playlists.map((playlist, idx) => {
                 return (
-                  <li key={playlistId}>
+                  <li key={idx}>
                     {playlist ? playlist.title : "Unknown Playlist"}
                   </li>
                 );
@@ -106,16 +114,16 @@ const DisplayTopics = () => {
               <option value="" disabled>
                 Select a playlist to add
               </option>
-              {playlists.map((playlist) => (
+              {/* {playlists.map((playlist) => (
                 <option key={playlist._id} value={playlist._id}>
                   {playlist.title}
                 </option>
-              ))}
+              ))} */}
             </select>
             <button
               className="btn btn-primary ml-2"
               onClick={() => handleAddPlaylist(topic._id)}
-              //   disabled={!selectedPlaylist}
+              disabled={!selectedPlaylist}
             >
               Add Playlist
             </button>

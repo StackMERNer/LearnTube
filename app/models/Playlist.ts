@@ -4,10 +4,11 @@ export interface IVideo {
   videoId: string;
   title: string;
   thumbnail: string; // URL to the smaller thumbnail
-  position:number;
+  position: number;
 }
 
-interface IPlaylist extends Document {
+export interface IPlaylist extends Document {
+  topic: mongoose.Schema.Types.ObjectId;
   user: mongoose.Schema.Types.ObjectId;
   title: string;
   playlistId: string;
@@ -24,6 +25,11 @@ const VideoSchema: Schema<IVideo> = new Schema({
 
 const PlaylistSchema: Schema<IPlaylist> = new Schema(
   {
+    topic: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Topic",
+    },
     user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
     title: { type: String, required: true },
     playlistId: { type: String, required: true, unique: true }, // YouTube Playlist ID
