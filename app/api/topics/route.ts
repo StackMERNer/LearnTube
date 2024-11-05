@@ -7,7 +7,7 @@ export const GET = async () => {
     await connectDB();
     const topics = await Topic.find({}).populate({
       path: "playlists",
-      select: "title playlistId",
+      select: "title playlistId thumbnail",
     });
     return NextResponse.json(topics);
   } catch (error) {

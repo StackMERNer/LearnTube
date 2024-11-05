@@ -1,6 +1,7 @@
 "use client";
 import { IPlaylist } from "@/app/models/Playlist";
 import useUserStore from "@/stores/useUserStore";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -93,13 +94,23 @@ const DisplayTopics = () => {
           {/* Display associated playlists */}
           <div className="mb-2">
             <strong>Playlists:</strong>
-            <ul className="list-disc list-inside">
+            <div className="flex flex-col gap-2">
               {topic.playlists.map((playlist, idx) => (
-                <li key={idx}>
-                  {playlist ? playlist.title : "Unknown Playlist"}
-                </li>
+                <div key={idx}>
+                  <div className="grid grid-cols-[1fr,4fr,1fr] items-center gap-2">
+                    <Image
+                      src={playlist.thumbnail}
+                      height={100}
+                      width={100}
+                      alt="playlist thumbnail"
+                      className="h-auto w-auto"
+                    />
+                    <h1>{playlist ? playlist.title : "Unknown Playlist"}</h1>
+                    <button className="btn btn-primary">Start Learning</button>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Playlist input field and button */}
