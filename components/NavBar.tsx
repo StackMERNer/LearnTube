@@ -1,10 +1,50 @@
-import { getSession } from "@auth0/nextjs-auth0";
-import React from "react";
+"use client";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import React, { useEffect } from "react";
 import Link from "next/link"; // Import Link for navigation
 
-const NavBar = async () => {
-  const session = await getSession();
-  const user = session?.user;
+const NavBar = () => {
+  const { user, error, isLoading } = useUser();
+
+  useEffect(() => {
+    const sendUserData = async () => {
+        if (user) {
+          try {
+            const response = await fetch('/api/user', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                auth0Id: user.sub,
+                email: user.email,
+                name: user.name,
+                picture: user.picture,
+              }),
+            });
+      
+            if (!response.ok) {
+              throw new Error("Failed to send user data");
+            }
+      
+            const data = await response.json();
+            console.log("User data processed:", data.message); // Log the success message
+            console.log("User information:", data.user); // Log the user data
+          } catch (error) {
+            console.error("Error sending user data:", error);
+          }
+        }
+      };
+
+    // Call the function to send user data after checking if user is loaded
+    if (!isLoading && user) {
+      sendUserData();
+    }
+  }, [user, isLoading]); // Dependency array to trigger useEffect when user or loading state changes
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Show loading state while fetching user data
+  }
 
   return (
     <div className="navbar bg-base-100 container mx-auto">
@@ -31,13 +71,13 @@ const NavBar = async () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
             <li>
-              <a>Homepage</a>
+              <Link href="/">Homepage</Link>
             </li>
             <li>
-              <a>Portfolio</a>
+              <Link href="/portfolio">Portfolio</Link>
             </li>
             <li>
-              <a>About</a>
+              <Link href="/about">About</Link>
             </li>
           </ul>
         </div>
@@ -46,8 +86,9 @@ const NavBar = async () => {
         <a className="btn btn-ghost text-xl">LearnTube</a>
       </div>
       <div className="navbar-end">
-        {user ? (
-          // If user is signed in, show their name and a logout button
+        {error ? (
+          <div>Error loading user data</div>
+        ) : user ? (
           <div className="flex items-center">
             <span className="mr-2">Welcome, {user.name}!</span>
             <Link href="/api/auth/logout" className="btn btn-ghost">
@@ -55,14 +96,10 @@ const NavBar = async () => {
             </Link>
           </div>
         ) : (
-          // If user is not signed in, show login/signup buttons
           <div>
             <Link href="/api/auth/login" className="btn btn-ghost">
               Login
             </Link>
-            {/* <Link href="/api/auth/signup" className="btn btn-ghost ml-2">
-              Signup
-            </Link> */}
           </div>
         )}
         <button className="btn btn-ghost btn-circle">
