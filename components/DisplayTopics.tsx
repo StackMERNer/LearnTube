@@ -1,6 +1,5 @@
 "use client";
 import { IPlaylist } from "@/app/models/Playlist";
-import { IUser } from "@/app/models/User";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -15,7 +14,7 @@ interface Topic {
 const DisplayTopics = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [playlistUrl, setPlaylistUrl] = useState<string>(""); // State for input field
-  const { user, setUser } = useUserStore();
+  const { user } = useUserStore();
   // const [targetTopicId, setTargetTopicId] = useState<string | null>(null);
 
   // Fetch topics on mount

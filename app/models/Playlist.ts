@@ -8,7 +8,7 @@ export interface IVideo {
 }
 
 export interface IPlaylist extends Document {
-  topic: mongoose.Schema.Types.ObjectId;
+  topic: { type: mongoose.Schema.Types.ObjectId; ref: "Topic" };
   user: mongoose.Schema.Types.ObjectId;
   title: string;
   playlistId: string;
