@@ -4,7 +4,7 @@ import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import { FaCheckCircle } from "react-icons/fa";
 const LearningDashboard = () => {
   const { user } = useUserStore();
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
@@ -60,7 +60,7 @@ const LearningDashboard = () => {
                 {playlist.videos.map((video) => (
                   <li
                     key={video.videoId}
-                    className="flex items-center space-x-4"
+                    className="flex items-center space-x-4 cursor-pointer"
                   >
                     <Image
                       height={60}
@@ -69,23 +69,31 @@ const LearningDashboard = () => {
                       alt={video.title}
                       className="w-12 h-12 object-cover rounded"
                     />
-                    <div className="flex-1">
-                      <p className="text-md font-semibold">{video.title}</p>
-                      <p className="text-sm text-gray-500">
-                        Position: {video.position}
-                      </p>
-                    </div>
-                    <button
-                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                    <div
                       onClick={() =>
                         window.open(
                           `https://www.youtube.com/watch?v=${video.videoId}`,
                           "_blank"
                         )
                       }
+                      className="flex-1"
                     >
-                      Watch
-                    </button>
+                      <p className="text-md font-semibold">{video.title}</p>
+                      <p className="text-sm text-gray-500">
+                        Position: {video.position}
+                      </p>
+                    </div>
+                    <div>
+                      {true ? (
+                        <span>
+                          <FaCheckCircle size={25} className="text-green-400" />
+                        </span>
+                      ) : (
+                        <button className=" btn btn-primary px-3 py-1 rounded scale-95">
+                          Mark Finished
+                        </button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
