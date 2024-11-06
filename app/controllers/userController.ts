@@ -1,4 +1,4 @@
-import User from "@/app/models/User";
+import IUser from "@/app/models/User";
 
 // Function to add a playlist ID to the user's current playlists
 export const addToCurrentPlaylists = async (userId: string, playlistId: string) => {

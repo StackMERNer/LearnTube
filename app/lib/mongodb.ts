@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from "@/app/models/User"; // Import your User model
+import IUser from "@/app/models/User"; // Import your User model
 import "@/app/models/Playlist";
 const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) {
