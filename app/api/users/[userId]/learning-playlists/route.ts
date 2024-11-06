@@ -9,7 +9,6 @@ import Playlist from "@/app/models/Playlist";
 export const GET = async (req: NextRequest,) => {
   try {
     const userId = req.nextUrl.pathname.split("/")[3];
-    console.log("xxx", userId);
     const user = await User.findById(userId).select("learningPlaylists");
 
     const playlists = await Playlist.find({
@@ -27,7 +26,6 @@ export const GET = async (req: NextRequest,) => {
 export const POST = async (req: NextRequest) => {
   try {
     const userId = req.nextUrl.pathname.split("/")[3];
-    console.log("userIdx", userId);
     const { playlistId } = await req.json();
     await addToCurrentPlaylists(userId, playlistId);
     return NextResponse.json({
