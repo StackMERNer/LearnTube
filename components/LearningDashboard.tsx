@@ -113,21 +113,29 @@ const LearningDashboard = () => {
                         Position: {video.position}
                       </p>
                     </div>
-                    <div>
+                    <div className="min-w-[30px]">
                       {finishedVideos.includes(video.videoId) ? (
-                        <FaCheckCircle size={25} className="text-green-400" />
+                        <button>
+                          <FaCheckCircle size={25} className="text-green-400" />
+                        </button>
                       ) : (
-                        <button
+                        <div
                           onClick={() =>
                             markVideoAsFinished(
                               playlist.playlistId,
                               video.videoId
                             )
                           }
-                          className="btn btn-primary px-3 py-1 rounded scale-95"
+                          className="group"
                         >
-                          Mark Finished
-                        </button>
+                          <FaCheckCircle
+                            className="group-hover:hidden"
+                            size={25}
+                          />
+                          <button className="hidden group-hover:inline-block btn btn-primary text-white">
+                            mark Finished
+                          </button>
+                        </div>
                       )}
                     </div>
                   </li>
