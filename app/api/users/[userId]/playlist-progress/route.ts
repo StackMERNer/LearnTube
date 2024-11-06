@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import UserPlaylistProgress from "@/app/models/UserPlaylistProgress";
 import connectDB from "@/app/lib/mongodb";
-import User from "@/app/models/User";
 import UserLearning, { ILearningInfo } from "@/app/models/UserLearning";
 
 export const POST = async (
@@ -62,8 +61,6 @@ export const GET = async (
       (playlist: ILearningInfo) => playlist.playlistId
     );
     // Collect all finished video IDs for the user's playlists
-
-    console.log("playlistIds", playlistIds);
 
     let allFinishedVideos: string[] = [];
 
