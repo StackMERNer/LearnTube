@@ -42,7 +42,7 @@ export const GET = async (req: Request) => {
     }
 
     // Fetch user document to get learningPlaylists array
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(userId);
     if (!user || !user.learningPlaylists) {
       return NextResponse.json(
         { message: "User or learning playlists not found" },
@@ -58,7 +58,7 @@ export const GET = async (req: Request) => {
       const progress = await UserPlaylistProgress.findOne({
         playlistId,
         user: userId,
-      }).lean();
+      });
       if (progress && progress.finishedVideos) {
         allFinishedVideos = allFinishedVideos.concat(progress.finishedVideos);
       }
