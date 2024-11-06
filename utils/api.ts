@@ -1,8 +1,7 @@
-// src/utils/api.ts
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api", // Base URL from environment
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },

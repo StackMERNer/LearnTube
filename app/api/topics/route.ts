@@ -5,10 +5,7 @@ import { NextResponse } from "next/server";
 export const GET = async () => {
   try {
     await connectDB();
-    const topics = await Topic.find({}).populate({
-      path: "playlists",
-      select: "title playlistId thumbnail",
-    });
+    const topics = await Topic.find({});
     return NextResponse.json(topics);
   } catch (error) {
     console.error("Error fetching topics:", error);
