@@ -61,20 +61,33 @@ const LearningDashboard = () => {
       toast.error("Failed to mark video as finished");
     }
   };
-
+  const [accordion, setAccordion] = useState<{
+    [key: string]: "collapsed" | "expanded";
+  }>({});
+  const handleAccordion = (playlistId: string) => {
+    setAccordion((prev) => ({
+      ...prev,
+      [playlistId]: prev[playlistId] === "collapsed" ? "expanded" : "collapsed",
+    }));
+  };
   if (!user) return null;
 
   return (
     <main className="p-5 mt-12">
-      <h1 className="text-2xl font-bold mb-6 text-center">Your Learning Playlists</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Your Learning Playlists
+      </h1>
       <div className="w-full shadow rounded-lg">
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
-            className="collapse collapse-plus join-item border-base-300 border-b rounded-none"
+            className="join-item border-base-300 border-b rounded-none"
           >
-            <input type="radio" name="playlist-accordion" />
-            <div className="collapse-title text-xl font-medium flex items-center space-x-4 cursor-pointer">
+            {/* <input type="radio" name="playlist-accordion" /> */}
+            <div
+              className="text-xl font-medium flex items-center space-x-4 cursor-pointer"
+              onClick={() => handleAccordion(playlist.playlistId)}
+            >
               <Image
                 height={60}
                 width={60}
@@ -84,64 +97,69 @@ const LearningDashboard = () => {
               />
               <span>{playlist.title}</span>
             </div>
-            <div className="collapse-content px-4">
-              <p className="text-gray-600 mb-4">{playlist.description}</p>
-              <ul className="space-y-2">
-                {playlist.videos.map((video) => (
-                  <li
-                    key={video.videoId}
-                    className="flex items-center space-x-4 cursor-pointer "
-                  >
-                    <Image
-                      height={60}
-                      width={60}
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-12 h-12 object-cover rounded"
-                    />
-                    <div
-                      onClick={() =>
-                        window.open(
-                          `https://www.youtube.com/watch?v=${video.videoId}`,
-                          "_blank"
-                        )
-                      }
-                      className="flex-1 hover:bg-gray-200 p-2 rounded"
+            {accordion[playlist.playlistId] === "expanded" && (
+              <div className="px-4">
+                <p className="text-gray-600 mb-4">{playlist.description}</p>
+                <ul className="space-y-2">
+                  {playlist.videos.map((video) => (
+                    <li
+                      key={video.videoId}
+                      className="flex items-center space-x-4 cursor-pointer "
                     >
-                      <p className="text-md font-semibold">{video.title}</p>
-                      <p className="text-sm text-gray-500">
-                        Position: {video.position}
-                      </p>
-                    </div>
-                    <div className="min-w-[30px]">
-                      {finishedVideos.includes(video.videoId) ? (
-                        <button>
-                          <FaCheckCircle size={25} className="text-green-400" />
-                        </button>
-                      ) : (
-                        <div
-                          onClick={() =>
-                            markVideoAsFinished(
-                              playlist.playlistId,
-                              video.videoId
-                            )
-                          }
-                          className="group"
-                        >
-                          <FaCheckCircle
-                            className="group-hover:hidden"
-                            size={25}
-                          />
-                          <button className="hidden group-hover:inline-block btn btn-primary text-white">
-                            mark Finished
+                      <Image
+                        height={60}
+                        width={60}
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                      <div
+                        onClick={() =>
+                          window.open(
+                            `https://www.youtube.com/watch?v=${video.videoId}`,
+                            "_blank"
+                          )
+                        }
+                        className="flex-1 hover:bg-gray-200 p-2 rounded"
+                      >
+                        <p className="text-md font-semibold">{video.title}</p>
+                        <p className="text-sm text-gray-500">
+                          Position: {video.position}
+                        </p>
+                      </div>
+                      <div className="min-w-[30px]">
+                        {finishedVideos.includes(video.videoId) ? (
+                          <button>
+                            <FaCheckCircle
+                              size={25}
+                              className="text-green-400"
+                            />
                           </button>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                        ) : (
+                          <div
+                            onClick={() =>
+                              markVideoAsFinished(
+                                playlist.playlistId,
+                                video.videoId
+                              )
+                            }
+                            className="group"
+                          >
+                            <FaCheckCircle
+                              className="group-hover:hidden"
+                              size={25}
+                            />
+                            <button className="hidden group-hover:inline-block btn btn-primary text-white">
+                              mark Finished
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ))}
       </div>
