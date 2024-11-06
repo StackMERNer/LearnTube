@@ -104,8 +104,8 @@ const TopicPage = ({
     return null;
   }
   return (
-    <section className="py-8 p-4 border border-gray-200 rounded-md container mx-auto">
-      <h3 className="text-xl font-semibold">{topic.title}</h3>
+    <section className="py-8 p-4 mt-20 border border-gray-200 rounded-md container mx-auto">
+      <h3 className="text-2xl font-semibold">{topic.title}</h3>
 
       {/* Display associated playlists */}
       <div className="">
@@ -135,7 +135,7 @@ const TopicPage = ({
       </div>
 
       {/* Playlist input field and button */}
-      <div className="grid grid-cols-[5fr,1fr] mt-4">
+      <div className="grid grid-cols-[5fr,1fr] py-4">
         <input
           type="text"
           className="input input-bordered w-full"
