@@ -21,7 +21,7 @@ export const POST = async (req: Request) => {
     let nextPageToken: string | undefined = "";
 
     do {
-      const url:string = `https://youtube-v31.p.rapidapi.com/playlistItems?playlistId=${playlistId}&part=snippet&maxResults=50&pageToken=${nextPageToken}`;
+      const url: string = `https://youtube-v31.p.rapidapi.com/playlistItems?playlistId=${playlistId}&part=snippet&maxResults=50&pageToken=${nextPageToken}`;
       const response = await fetch(url, { headers });
       const data = await response.json();
 
@@ -58,11 +58,15 @@ export const POST = async (req: Request) => {
 
     await connectDB();
 
-    // Check if playlist exists and update or create
+    // Check if playlist already exists
+    const existingPlaylist = await Playlist.findOne({ playlistId });
+    const wasNew = !existingPlaylist;
+
+    // Update or create the playlist
     const updatedPlaylist = await Playlist.findOneAndUpdate(
       { playlistId },
-      playlistInfo, // replace with the new playlistInfo document
-      { new: true, upsert: true } // upsert creates a new document if none is found
+      playlistInfo,
+      { new: true, upsert: true }
     );
 
     // Ensure playlist ID is in topic
@@ -71,7 +75,7 @@ export const POST = async (req: Request) => {
     });
 
     return NextResponse.json({
-      message: updatedPlaylist.wasNew ? "Playlist created successfully" : "Playlist updated successfully",
+      message: wasNew ? "Playlist created successfully" : "Playlist updated successfully",
       data: updatedPlaylist,
     });
   } catch (error) {
