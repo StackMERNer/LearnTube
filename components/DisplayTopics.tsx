@@ -1,5 +1,6 @@
 "use client";
 import { IPlaylist } from "@/app/models/Playlist";
+import { IUser } from "@/app/models/User";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ interface Topic {
 const DisplayTopics = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [playlistUrl, setPlaylistUrl] = useState<string>(""); // State for input field
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   // const [targetTopicId, setTargetTopicId] = useState<string | null>(null);
 
   // Fetch topics on mount
@@ -87,24 +88,25 @@ const DisplayTopics = () => {
     }
 
     try {
-      const response = await fetch(`/api/users/${user._id}/learning-playlists`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user._id,
-          playlistId,
-        }),
-      });
-
-      console.log('response',response)
-
+      const response = await fetch(
+        `/api/users/${user._id}/learning-playlists`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user._id,
+            playlistId,
+          }),
+        }
+      );
       if (!response.ok) throw new Error("Error starting to learn");
-
-      const res = await response.json();
+      setUser({
+        ...user,
+        learningPlaylists: [...user.learningPlaylists, playlistId],
+      } as IUser);
       toast.success("Started learning this playlist!");
-      console.log("Start Learning Response:", res);
     } catch (error) {
       console.error("Error starting learning:", error);
       toast.error("Error starting to learn this playlist");
@@ -135,12 +137,18 @@ const DisplayTopics = () => {
                       className="h-auto w-auto"
                     />
                     <h1>{playlist ? playlist.title : "Unknown Playlist"}</h1>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleStartLearning(playlist.playlistId)}
-                    >
-                      Start Learning
-                    </button>
+                    {user?.learningPlaylists.includes(playlist.playlistId) ? (
+                      <button className="btn btn-secondary">
+                        Learning now
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleStartLearning(playlist.playlistId)}
+                      >
+                        Start Learning
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
