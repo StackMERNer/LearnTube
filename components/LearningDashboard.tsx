@@ -30,7 +30,7 @@ const LearningDashboard = () => {
         if (!finishedVideosResponse.ok)
           throw new Error("Failed to fetch finished videos");
         const finishedVideosData = await finishedVideosResponse.json();
-        console.log("finishedVideosData", finishedVideosData);
+
         setFinishedVideos(finishedVideosData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -90,7 +90,7 @@ const LearningDashboard = () => {
                 {playlist.videos.map((video) => (
                   <li
                     key={video.videoId}
-                    className="flex items-center space-x-4 cursor-pointer py-2"
+                    className="flex items-center space-x-4 cursor-pointer "
                   >
                     <Image
                       height={60}
@@ -106,7 +106,7 @@ const LearningDashboard = () => {
                           "_blank"
                         )
                       }
-                      className="flex-1"
+                      className="flex-1 hover:bg-gray-200 p-2 rounded"
                     >
                       <p className="text-md font-semibold">{video.title}</p>
                       <p className="text-sm text-gray-500">
