@@ -5,9 +5,11 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
+
 const LearningDashboard = () => {
   const { user } = useUserStore();
   const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  const [finishedVideos, setFinishedVideos] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -20,30 +22,58 @@ const LearningDashboard = () => {
         if (!topicsResponse.ok) throw new Error("Failed to fetch topics");
         const playlists = await topicsResponse.json();
         setPlaylists(playlists);
+
+        // Fetch finished videos for each playlist
+        const finishedVideosResponse = await fetch(
+          `/api/user-playlist-progress?user=${user._id}`
+        );
+        if (!finishedVideosResponse.ok)
+          throw new Error("Failed to fetch finished videos");
+        const finishedVideosData = await finishedVideosResponse.json();
+        console.log("finishedVideosData", finishedVideosData);
+        setFinishedVideos(finishedVideosData);
       } catch (error) {
-        console.error("Error fetching topics:", error);
-        toast.error("Failed to load topics");
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load data");
       }
     };
 
     fetchData();
   }, [user]);
 
+  const markVideoAsFinished = async (playlistId: string, videoId: string) => {
+    try {
+      const response = await fetch(`/api/user-playlist-progress`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId, videoId, user: user!._id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to mark video as finished");
+
+      // Update the local state to show the video as finished
+      setFinishedVideos((prev) => [...prev, videoId]);
+      toast.success("Video marked as finished");
+    } catch (error) {
+      console.error("Error marking video as finished:", error);
+      toast.error("Failed to mark video as finished");
+    }
+  };
+
   if (!user) return null;
 
   return (
     <main className="p-5 mt-12">
       <h1 className="text-2xl font-bold mb-6">Your Learning Playlists</h1>
-      <div className="w-full shadow  rounded-lg">
+      <div className="w-full shadow rounded-lg">
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
             className="collapse collapse-arrow join-item border-base-300 border-b"
           >
-            <input
-              type="radio"
-              name="playlist-accordion" // Ensures only one playlist opens at a time
-            />
+            <input type="radio" name="playlist-accordion" />
             <div className="collapse-title text-xl font-medium flex items-center space-x-4 cursor-pointer">
               <Image
                 height={60}
@@ -84,12 +114,18 @@ const LearningDashboard = () => {
                       </p>
                     </div>
                     <div>
-                      {true ? (
-                        <span>
-                          <FaCheckCircle size={25} className="text-green-400" />
-                        </span>
+                      {finishedVideos.includes(video.videoId) ? (
+                        <FaCheckCircle size={25} className="text-green-400" />
                       ) : (
-                        <button className=" btn btn-primary px-3 py-1 rounded scale-95">
+                        <button
+                          onClick={() =>
+                            markVideoAsFinished(
+                              playlist.playlistId,
+                              video.videoId
+                            )
+                          }
+                          className="btn btn-primary px-3 py-1 rounded scale-95"
+                        >
                           Mark Finished
                         </button>
                       )}

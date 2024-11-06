@@ -31,9 +31,7 @@ const NavBar = () => {
           }
 
           const data = await response.json();
-          console.log("User data processed:", data.message); // Log the success message
-          console.log("User information:", data.user); // Log the user data
-
+        
           // Set the user data in Zustand store
           setUser(data.user);
 

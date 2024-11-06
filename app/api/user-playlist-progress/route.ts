@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import UserPlaylistProgress from "@/app/models/UserPlaylistProgress";
 import connectDB from "@/app/lib/mongodb";
+import User from "@/app/models/User";
 
 export const POST = async (req: Request) => {
   try {
@@ -29,23 +30,41 @@ export const POST = async (req: Request) => {
 export const GET = async (req: Request) => {
   try {
     await connectDB();
-    const { searchParams } = new URL(req.url);
-    const playlistId = searchParams.get("playlistId");
-    const user = searchParams.get("user");
 
-    if (!playlistId || !user) {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("user");
+
+    if (!userId) {
       return NextResponse.json(
-        { message: "Playlist ID and User ID are required" },
+        { message: "User ID is required" },
         { status: 400 }
       );
     }
 
-    const progress = await UserPlaylistProgress.findOne({ playlistId, user });
+    // Fetch user document to get learningPlaylists array
+    const user = await User.findById(userId).lean();
+    if (!user || !user.learningPlaylists) {
+      return NextResponse.json(
+        { message: "User or learning playlists not found" },
+        { status: 404 }
+      );
+    }
 
-    return NextResponse.json({
-      message: "Finished videos retrieved successfully",
-      data: progress?.finishedVideos || [],
-    });
+    // Collect all finished video IDs for the user's playlists
+    let allFinishedVideos: string[] = [];
+
+    // Fetch finished videos for each playlist in learningPlaylists
+    for (const playlistId of user.learningPlaylists) {
+      const progress = await UserPlaylistProgress.findOne({
+        playlistId,
+        user: userId,
+      }).lean();
+      if (progress && progress.finishedVideos) {
+        allFinishedVideos = allFinishedVideos.concat(progress.finishedVideos);
+      }
+    }
+
+    return NextResponse.json(allFinishedVideos);
   } catch (error) {
     console.error("Error retrieving finished videos:", error);
     return NextResponse.json(

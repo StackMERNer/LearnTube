@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IUserPlaylistProgress extends Document {
+export interface IUserPlaylistProgress extends Document {
   playlistId: string;
   user: mongoose.Schema.Types.ObjectId;
   finishedVideos: string[];
@@ -12,7 +12,8 @@ const UserPlaylistProgressSchema = new Schema<IUserPlaylistProgress>({
   finishedVideos: { type: [String], default: [] },
 });
 
-const UserPlaylistProgress = mongoose.model<IUserPlaylistProgress>(
+// Check if model already exists to prevent OverwriteModelError
+const UserPlaylistProgress = mongoose.models.UserPlaylistProgress || mongoose.model<IUserPlaylistProgress>(
   "UserPlaylistProgress",
   UserPlaylistProgressSchema
 );
