@@ -71,7 +71,7 @@ const LearningDashboard = () => {
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
-            className="collapse collapse-arrow join-item border-base-300 border-b"
+            className="collapse collapse-plus join-item border-base-300 border-b"
           >
             <input type="radio" name="playlist-accordion" />
             <div className="collapse-title text-xl font-medium flex items-center space-x-4 cursor-pointer">

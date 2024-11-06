@@ -35,10 +35,9 @@ const NavBar = () => {
           // Set the user data in Zustand store
           setUser(data.user);
 
-          toast.success("User data sent successfully!"); // Show success message
-        } catch (error) {
-          console.error("Error sending user data:", error);
-          toast.error("Error sending user data."); // Show error message
+          toast.success("Welcome!"); // Show success message
+        } catch (error:any) {
+          toast.error(`Error sending user data:${error.message}`); // Show error message
         }
       }
     };
@@ -49,9 +48,6 @@ const NavBar = () => {
     }
   }, [user, isLoading, setUser]); // Add setUser to the dependency array
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>; // Show loading state while fetching user data
-  // }
 
   return (
     <>
