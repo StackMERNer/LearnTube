@@ -66,12 +66,12 @@ const LearningDashboard = () => {
 
   return (
     <main className="p-5 mt-12">
-      <h1 className="text-2xl font-bold mb-6">Your Learning Playlists</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Your Learning Playlists</h1>
       <div className="w-full shadow rounded-lg">
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
-            className="collapse collapse-plus join-item border-base-300 border-b"
+            className="collapse collapse-plus join-item border-base-300 border-b rounded-none"
           >
             <input type="radio" name="playlist-accordion" />
             <div className="collapse-title text-xl font-medium flex items-center space-x-4 cursor-pointer">
@@ -84,13 +84,13 @@ const LearningDashboard = () => {
               />
               <span>{playlist.title}</span>
             </div>
-            <div className="collapse-content px-4 py-2">
+            <div className="collapse-content px-4">
               <p className="text-gray-600 mb-4">{playlist.description}</p>
               <ul className="space-y-2">
                 {playlist.videos.map((video) => (
                   <li
                     key={video.videoId}
-                    className="flex items-center space-x-4 cursor-pointer"
+                    className="flex items-center space-x-4 cursor-pointer py-2"
                   >
                     <Image
                       height={60}
