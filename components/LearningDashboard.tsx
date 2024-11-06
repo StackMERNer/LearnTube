@@ -150,7 +150,7 @@ const LearningDashboard = () => {
                               size={25}
                             />
                             <button className="hidden group-hover:inline-block btn btn-primary text-white">
-                              mark Finished
+                              Mark Finished
                             </button>
                           </div>
                         )}
