@@ -77,7 +77,7 @@ const LearningDashboard = () => {
       <h1 className="text-2xl font-bold mb-6 text-center">
         Your Learning Playlists
       </h1>
-      <div className="w-full shadow rounded-lg">
+      <div className="w-full shadow rounded-lg p-4">
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
@@ -98,7 +98,7 @@ const LearningDashboard = () => {
               <span>{playlist.title}</span>
             </div>
             {accordion[playlist.playlistId] === "expanded" && (
-              <div className="px-4">
+              <div className="p-3">
                 <p className="text-gray-600 mb-4">{playlist.description}</p>
                 <ul className="space-y-2">
                   {playlist.videos.map((video) => (
