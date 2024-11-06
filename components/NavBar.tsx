@@ -102,7 +102,7 @@ const NavBar = () => {
             </div>
           </div>
           <div className="navbar-center">
-            <a className="btn btn-ghost text-xl">LearnTube</a>
+            <Link href='/' className="btn btn-ghost text-xl">LearnTube</Link>
           </div>
           <div className="navbar-end">
             {error ? (
