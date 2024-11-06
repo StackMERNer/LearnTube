@@ -44,7 +44,7 @@ const LearningDashboard = () => {
               type="radio"
               name="playlist-accordion" // Ensures only one playlist opens at a time
             />
-            <div className="collapse-title text-xl font-medium flex items-center space-x-4">
+            <div className="collapse-title text-xl font-medium flex items-center space-x-4 cursor-pointer">
               <Image
                 height={60}
                 width={60}
