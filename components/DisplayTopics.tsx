@@ -89,7 +89,8 @@ const DisplayTopics = () => {
 
     try {
       const response = await fetch(
-        `/api/users/${user._id}/learning-playlists`,
+        // `/api/users/${user._id}/learning-playlists`,
+        `/api/users/${user._id}/learnings`,
         {
           method: "POST",
           headers: {
@@ -98,14 +99,16 @@ const DisplayTopics = () => {
           body: JSON.stringify({
             userId: user._id,
             playlistId,
+            status: "Learning",
           }),
         }
       );
       if (!response.ok) throw new Error("Error starting to learn");
-      setUser({
-        ...user,
-        learningPlaylists: [...user.learningPlaylists, playlistId],
-      } as IUser);
+      // setUser({
+      //   ...user,
+      //   learningPlaylists: [...user.learningPlaylists, playlistId],
+      // } as IUser);
+      console.log(response.json());
       toast.success("Started learning this playlist!");
     } catch (error) {
       console.error("Error starting learning:", error);
@@ -137,18 +140,18 @@ const DisplayTopics = () => {
                       className="h-auto w-auto"
                     />
                     <h1>{playlist ? playlist.title : "Unknown Playlist"}</h1>
-                    {user?.learningPlaylists.includes(playlist.playlistId) ? (
+                    {/* {user?.learningPlaylists.includes(playlist.playlistId) ? (
                       <button className="btn btn-secondary">
                         Learning now
                       </button>
-                    ) : (
+                    ) : ( */}
                       <button
                         className="btn btn-primary"
                         onClick={() => handleStartLearning(playlist.playlistId)}
                       >
                         Start Learning
                       </button>
-                    )}
+                    {/* )} */}
                   </div>
                 </div>
               ))}

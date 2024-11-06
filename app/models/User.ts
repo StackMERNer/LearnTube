@@ -5,7 +5,12 @@ export interface IUser extends Document {
   email: string;
   name: string;
   picture: string;
-  learningPlaylists: string[]; // Array to store playlist IDs
+  learnings: {
+    playlistId: string;
+    startedAt: Date;
+    finishedAt?: Date;
+    status: "Learning" | "Paused" | "Finished";
+  }[];
 }
 
 const UserSchema: Schema<IUser> = new Schema(
@@ -14,7 +19,7 @@ const UserSchema: Schema<IUser> = new Schema(
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     picture: { type: String, required: true },
-    learningPlaylists: { type: [String], default: [] }, // Add this line
+    // Add this line
   },
   { timestamps: true }
 );

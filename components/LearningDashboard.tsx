@@ -1,5 +1,6 @@
 "use client";
 import { IPlaylist } from "@/app/models/Playlist";
+import { ILearningInfo } from "@/app/models/UserLearning";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -8,7 +9,10 @@ import { FaCheckCircle } from "react-icons/fa";
 
 const LearningDashboard = () => {
   const { user } = useUserStore();
-  const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  // const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
+  const [userLearning, setUserLearning] = useState<
+    { learningInfo: ILearningInfo; playlist: IPlaylist }[]
+  >([]);
   const [finishedVideos, setFinishedVideos] = useState<string[]>([]);
 
   useEffect(() => {
@@ -16,16 +20,17 @@ const LearningDashboard = () => {
 
     const fetchData = async () => {
       try {
-        const topicsResponse = await fetch(
-          `/api/users/${user._id}/learning-playlists`
-        );
+        const topicsResponse = await fetch(`/api/users/${user._id}/learnings`);
         if (!topicsResponse.ok) throw new Error("Failed to fetch topics");
         const playlists = await topicsResponse.json();
-        setPlaylists(playlists);
+        setUserLearning(playlists);
+        console.log("playlists", playlists);
+
+        // setPlaylists(playlists);
 
         // Fetch finished videos for each playlist
         const finishedVideosResponse = await fetch(
-          `/api/user-playlist-progress?user=${user._id}`
+          `/api/users/${user._id}/playlist-progress`
         );
         if (!finishedVideosResponse.ok)
           throw new Error("Failed to fetch finished videos");
@@ -78,30 +83,32 @@ const LearningDashboard = () => {
         Your Learning Playlists
       </h1>
       <div className="w-full shadow rounded-lg p-4">
-        {playlists.map((playlist) => (
+        {userLearning.map((learningObj) => (
           <div
-            key={playlist.playlistId}
+            key={learningObj.playlist.playlistId}
             className="join-item border-base-300 border-b rounded-none"
           >
             {/* <input type="radio" name="playlist-accordion" /> */}
             <div
               className="text-xl font-medium flex items-center space-x-4 cursor-pointer"
-              onClick={() => handleAccordion(playlist.playlistId)}
+              onClick={() => handleAccordion(learningObj.playlist.playlistId)}
             >
               <Image
                 height={60}
                 width={60}
-                src={playlist.thumbnail}
-                alt={playlist.title}
+                src={learningObj.playlist.thumbnail}
+                alt={learningObj.playlist.title}
                 className="w-16 h-16 object-cover rounded"
               />
-              <span>{playlist.title}</span>
+              <span>{learningObj.playlist.title}</span>
             </div>
-            {accordion[playlist.playlistId] === "expanded" && (
+            {accordion[learningObj.playlist.playlistId] === "expanded" && (
               <div className="p-3">
-                <p className="text-gray-600 mb-4">{playlist.description}</p>
+                <p className="text-gray-600 mb-4">
+                  {learningObj.playlist.description}
+                </p>
                 <ul className="space-y-2">
-                  {playlist.videos.map((video) => (
+                  {learningObj.playlist.videos.map((video) => (
                     <li
                       key={video.videoId}
                       className="flex items-center space-x-4 cursor-pointer "
@@ -139,7 +146,7 @@ const LearningDashboard = () => {
                           <div
                             onClick={() =>
                               markVideoAsFinished(
-                                playlist.playlistId,
+                                learningObj.playlist.playlistId,
                                 video.videoId
                               )
                             }
