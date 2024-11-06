@@ -31,7 +31,7 @@ const AddTopicForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-[400px] mx-auto p-4 shadow  mb-3">
       <div>
         <label className="label">
           <span className="label-text">Topic Title</span>
@@ -45,7 +45,7 @@ const AddTopicForm = () => {
           required
         />
       </div>
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary w-full">
         Add Topic
       </button>
     </form>

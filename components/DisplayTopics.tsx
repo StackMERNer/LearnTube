@@ -156,10 +156,10 @@ const DisplayTopics = () => {
           </div>
 
           {/* Playlist input field and button */}
-          <div className="flex items-center mt-4">
+          <div className="grid grid-cols-[5fr,1fr] mt-4">
             <input
               type="text"
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full"
               placeholder="Enter Playlist URL"
               value={playlistUrl}
               onChange={(e) => setPlaylistUrl(e.target.value)}
