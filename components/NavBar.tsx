@@ -55,7 +55,7 @@ const NavBar = () => {
   return (
     <>
       <Toaster />
-      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full ">
+      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full border-b">
         <div className="container mx-auto flex items-center justify-between p-4">
           {/* Left Section: Dropdown Menu and Topics Link */}
           <div className="flex items-center space-x-4">
@@ -97,7 +97,7 @@ const NavBar = () => {
 
           {/* Center Section: Logo */}
           <Link href="/" className="text-2xl font-semibold text-gray-800">
-            LearnTube
+            LeanTube
           </Link>
 
           {/* Right Section: User Profile and Icons */}

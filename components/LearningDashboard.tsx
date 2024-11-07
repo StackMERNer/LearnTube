@@ -75,7 +75,7 @@ const LearningDashboard = () => {
       <h1 className="text-2xl font-bold mb-6 text-center">
         Your Learning Playlists
       </h1>
-      <div className="w-full shadow rounded-lg p-4">
+      <div className="shadow rounded-lg p-4">
         <Accordion type="single" collapsible>
           {userLearning.map((learningObj) => (
             <AccordionItem key={learningObj.playlist.playlistId} value={learningObj.playlist.playlistId}>
@@ -99,13 +99,13 @@ const LearningDashboard = () => {
                       key={video.videoId}
                       className="flex items-center space-x-4 cursor-pointer"
                     >
-                      <Image
+                      {/* <Image
                         height={60}
                         width={60}
                         src={video.thumbnail}
                         alt={video.title}
                         className="w-12 h-12 object-cover rounded"
-                      />
+                      /> */}
                       <div
                         onClick={() =>
                           window.open(
@@ -116,9 +116,9 @@ const LearningDashboard = () => {
                         className="flex-1 hover:bg-gray-200 p-2 rounded"
                       >
                         <p className="text-md font-semibold">{video.title}</p>
-                        <p className="text-sm text-gray-500">
+                        {/* <p className="text-sm text-gray-500">
                           Position: {video.position}
-                        </p>
+                        </p> */}
                       </div>
                       <div className="min-w-[30px]">
                         {finishedVideos.includes(video.videoId) ? (
