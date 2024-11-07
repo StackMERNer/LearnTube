@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 import { BsFillCameraVideoFill } from "react-icons/bs";
@@ -24,18 +25,14 @@ const PlaylistsAccordion = ({
   playlists,
 }: PlaylistsAccordionProps) => {
   return (
-    <Accordion
-      type="single"
-      collapsible
-      className="flex gap-2 flex-col"
-    >
+    <Accordion type="single" collapsible className="flex gap-2 flex-col">
       {playlists.map((playlist) => (
         <AccordionItem
           key={playlist.playlistId}
           value={playlist.playlistId}
           className={clsx("border px-2 rounded-lg w-full")}
         >
-          <AccordionTrigger className="text-xl font-medium border border-red-200">
+          <AccordionTrigger className="text-xl font-medium flex items-center space-x-4">
             <Image
               height={60}
               width={60}
@@ -43,7 +40,8 @@ const PlaylistsAccordion = ({
               alt={playlist.title}
               className="w-16 h-16 object-cover rounded"
             />
-            <span className="text-left">{playlist.title}</span>
+            {/* Aligning the title to the left */}
+            <span className="text-left w-full">{playlist.title}</span>
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-gray-600 mb-4">{playlist.description}</p>
