@@ -1,11 +1,12 @@
+import { Topic } from "@/types/topic";
 import mongoose from "mongoose";
 
-const TopicSchema = new mongoose.Schema(
+const TopicSchema = new mongoose.Schema<Topic>(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     description: { type: String },
     title: { type: String, required: true },
-    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }],
+    // playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }],
   },
   { timestamps: true }
 );

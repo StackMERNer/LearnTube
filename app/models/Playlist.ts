@@ -1,29 +1,14 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import { PlaylistModel, Video } from "@/types/playlist";
+import mongoose, { Schema, Model } from "mongoose";
 
-export interface IVideo {
-  videoId: string;
-  title: string;
-  thumbnail: string; // URL to the smaller thumbnail
-  position: number;
-}
 
-export interface IPlaylist extends Document {
-  topic: { type: mongoose.Schema.Types.ObjectId; ref: "Topic" };
-  user: mongoose.Schema.Types.ObjectId;
-  title: string;
-  playlistId: string;
-  description: string;
-  thumbnail: string; // URL to the playlist thumbnail
-  videos: IVideo[]; // Array of video objects
-}
-
-const VideoSchema: Schema<IVideo> = new Schema({
+const VideoSchema: Schema<Video> = new Schema({
   videoId: { type: String, required: true },
   title: { type: String, required: true },
   thumbnail: { type: String, required: true },
 });
 
-const PlaylistSchema: Schema<IPlaylist> = new Schema(
+const PlaylistSchema: Schema<PlaylistModel> = new Schema(
   {
     topic: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,8 +25,8 @@ const PlaylistSchema: Schema<IPlaylist> = new Schema(
   { timestamps: true }
 );
 
-const Playlist: Model<IPlaylist> =
+const Playlist: Model<PlaylistModel> =
   mongoose.models.Playlist ||
-  mongoose.model<IPlaylist>("Playlist", PlaylistSchema);
+  mongoose.model<PlaylistModel>("Playlist", PlaylistSchema);
 
 export default Playlist;
