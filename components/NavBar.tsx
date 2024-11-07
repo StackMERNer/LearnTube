@@ -80,12 +80,12 @@ const NavBar = () => {
                   <Link href="/topics">Topics</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/about">About</Link>
+                  <Link href="/playlists">Playlists</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Link href="/" className="text-2xl font-semibold text-gray-800">
-              LearnTube
+              LeanTube
             </Link>
             {/* Dropdown Menu for smaller screens */}
 
@@ -100,8 +100,11 @@ const NavBar = () => {
               >
                 Topics
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-gray-900">
-                About
+              <Link
+                href="/playlists"
+                className="text-gray-700 hover:text-gray-900"
+              >
+                Playlists
               </Link>
             </div>
           </div>
