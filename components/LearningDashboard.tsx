@@ -1,16 +1,21 @@
 "use client";
+
 import { IPlaylist } from "@/app/models/Playlist";
 import { ILearningInfo } from "@/app/models/UserLearning";
 import useUserStore from "@/stores/useUserStore";
-import clsx from "clsx";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const LearningDashboard = () => {
   const { user } = useUserStore();
-  // const [playlists, setPlaylists] = useState<IPlaylist[]>([]);
   const [userLearning, setUserLearning] = useState<
     { learningInfo: ILearningInfo; playlist: IPlaylist }[]
   >([]);
@@ -25,11 +30,7 @@ const LearningDashboard = () => {
         if (!topicsResponse.ok) throw new Error("Failed to fetch topics");
         const playlists = await topicsResponse.json();
         setUserLearning(playlists);
-        console.log("playlists", playlists);
 
-        // setPlaylists(playlists);
-
-        // Fetch finished videos for each playlist
         const finishedVideosResponse = await fetch(
           `/api/users/${user._id}/playlist-progress`
         );
@@ -59,7 +60,6 @@ const LearningDashboard = () => {
 
       if (!response.ok) throw new Error("Failed to mark video as finished");
 
-      // Update the local state to show the video as finished
       setFinishedVideos((prev) => [...prev, videoId]);
       toast.success("Video marked as finished");
     } catch (error) {
@@ -67,15 +67,7 @@ const LearningDashboard = () => {
       toast.error("Failed to mark video as finished");
     }
   };
-  const [accordion, setAccordion] = useState<{
-    [key: string]: "collapsed" | "expanded";
-  }>({});
-  const handleAccordion = (playlistId: string) => {
-    setAccordion((prev) => ({
-      ...prev,
-      [playlistId]: prev[playlistId] === "collapsed" ? "expanded" : "collapsed",
-    }));
-  };
+
   if (!user) return null;
 
   return (
@@ -84,29 +76,20 @@ const LearningDashboard = () => {
         Your Learning Playlists
       </h1>
       <div className="w-full shadow rounded-lg p-4">
-        {userLearning.map((learningObj, index) => (
-          <div
-            key={learningObj.playlist.playlistId}
-            className={clsx("join-item  rounded-none", {
-              "border-b border-base-300": userLearning.length - 1 !== index,
-            })}
-          >
-            {/* <input type="radio" name="playlist-accordion" /> */}
-            <div
-              className="text-xl font-medium flex items-center space-x-4 cursor-pointer"
-              onClick={() => handleAccordion(learningObj.playlist.playlistId)}
-            >
-              <Image
-                height={60}
-                width={60}
-                src={learningObj.playlist.thumbnail}
-                alt={learningObj.playlist.title}
-                className="w-16 h-16 object-cover rounded"
-              />
-              <span>{learningObj.playlist.title}</span>
-            </div>
-            {accordion[learningObj.playlist.playlistId] === "expanded" && (
-              <div className="p-3">
+        <Accordion type="single" collapsible>
+          {userLearning.map((learningObj) => (
+            <AccordionItem key={learningObj.playlist.playlistId} value={learningObj.playlist.playlistId}>
+              <AccordionTrigger className="text-xl font-medium flex items-center space-x-4">
+                <Image
+                  height={60}
+                  width={60}
+                  src={learningObj.playlist.thumbnail}
+                  alt={learningObj.playlist.title}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <span>{learningObj.playlist.title}</span>
+              </AccordionTrigger>
+              <AccordionContent>
                 <p className="text-gray-600 mb-4">
                   {learningObj.playlist.description}
                 </p>
@@ -114,7 +97,7 @@ const LearningDashboard = () => {
                   {learningObj.playlist.videos.map((video) => (
                     <li
                       key={video.videoId}
-                      className="flex items-center space-x-4 cursor-pointer "
+                      className="flex items-center space-x-4 cursor-pointer"
                     >
                       <Image
                         height={60}
@@ -168,10 +151,10 @@ const LearningDashboard = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-          </div>
-        ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </main>
   );
