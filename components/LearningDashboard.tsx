@@ -69,7 +69,7 @@ const LearningDashboard = () => {
       </h1>
       <div className="p-4">
         <PlaylistsAccordion
-          userLearning={userLearning}
+          playlists={userLearning.map((learningObj) => learningObj.playlist)}
           finishedVideos={finishedVideos}
           onClickMarkVideoAsFinished={markVideoAsFinished}
         />

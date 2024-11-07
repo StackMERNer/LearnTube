@@ -3,25 +3,25 @@ import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import clsx from "clsx";
-import { Playlist } from "@/types/playlist";
-import { ILearningInfo } from "@/app/models/UserLearning";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Playlist } from "@/types/playlist";
 
 type PlaylistsAccordionProps = {
-  userLearning: { learningInfo: ILearningInfo; playlist: Playlist }[];
-  finishedVideos: string[];
+  finishedVideos?: string[];
+  playlists: Playlist[];
   onClickMarkVideoAsFinished?: (playlistId: string, videoId: string) => void;
 };
 
 const PlaylistsAccordion = ({
-  userLearning,
   finishedVideos,
   onClickMarkVideoAsFinished,
+  playlists,
 }: PlaylistsAccordionProps) => {
   return (
     <Accordion
@@ -29,28 +29,26 @@ const PlaylistsAccordion = ({
       collapsible
       className="flex items-center gap-2 flex-col"
     >
-      {userLearning.map((learningObj) => (
+      {playlists.map((playlist) => (
         <AccordionItem
-          key={learningObj.playlist.playlistId}
-          value={learningObj.playlist.playlistId}
+          key={playlist.playlistId}
+          value={playlist.playlistId}
           className={clsx("border px-2 rounded-lg w-full")}
         >
           <AccordionTrigger className="text-xl font-medium flex items-center space-x-4">
             <Image
               height={60}
               width={60}
-              src={learningObj.playlist.thumbnail}
-              alt={learningObj.playlist.title}
+              src={playlist.thumbnail}
+              alt={playlist.title}
               className="w-16 h-16 object-cover rounded"
             />
-            <span>{learningObj.playlist.title}</span>
+            <span>{playlist.title}</span>
           </AccordionTrigger>
           <AccordionContent>
-            <p className="text-gray-600 mb-4">
-              {learningObj.playlist.description}
-            </p>
+            <p className="text-gray-600 mb-4">{playlist.description}</p>
             <ul className="space-y-2">
-              {learningObj.playlist.videos.map((video) => (
+              {playlist.videos.map((video) => (
                 <li
                   key={video.videoId}
                   className="flex items-center space-x-4 cursor-pointer"
@@ -69,7 +67,7 @@ const PlaylistsAccordion = ({
                   </div>
                   {onClickMarkVideoAsFinished && (
                     <div className="min-w-[30px]">
-                      {finishedVideos.includes(video.videoId) ? (
+                      {finishedVideos?.includes(video.videoId) ? (
                         <button>
                           <FaCheckCircle size={25} className="text-green-400" />
                         </button>
@@ -77,7 +75,7 @@ const PlaylistsAccordion = ({
                         <div
                           onClick={() =>
                             onClickMarkVideoAsFinished(
-                              learningObj.playlist.playlistId,
+                              playlist.playlistId,
                               video.videoId
                             )
                           }
