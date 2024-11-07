@@ -1,6 +1,7 @@
 "use client";
 import AddTopicForm from "@/components/AddTopicForm";
 import { useTopics } from "@/hooks/useTopics";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -27,16 +28,33 @@ const TopicsPage = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {topics?.map((topic) => (
             <div
               key={topic._id}
-              className="mb-4 p-4 border border-gray-200 rounded-md flex items-center justify-between"
+              className="mb-4  border border-gray-200 rounded-md flex justify-between flex-col overflow-hidden"
             >
-              <h3 className="text-xl font-semibold mb-2">{topic.title}</h3>
-              <Link href={`topics/${topic._id}`}>
-                <button className="btn btn-primary">Explore</button>
-              </Link>
+              <div className="w-full h-[200px] rounded-b">
+                {topic.thumbnail && (
+                  <Image
+                    alt={topic.title}
+                    src={topic.thumbnail}
+                    height={60}
+                    width={200}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="p-2 pb-4">
+                <Link href={`topics/${topic._id}`}>
+                  <h3 className="text-xl font-semibold mb-2">{topic.title}</h3>
+                </Link>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
+                  repellendus, qui asperiores adipisci sunt necessitatibus
+                  itaque voluptates eos nobis ullam
+                </p>
+              </div>
             </div>
           ))}
         </div>
