@@ -55,7 +55,7 @@ const NavBar = () => {
   return (
     <>
       <Toaster />
-      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full bg-white shadow-md">
+      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full ">
         <div className="container mx-auto flex items-center justify-between p-4">
           {/* Left Section: Dropdown Menu and Topics Link */}
           <div className="flex items-center space-x-4">
