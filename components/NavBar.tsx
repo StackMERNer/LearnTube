@@ -1,13 +1,21 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import React, { useEffect } from "react";
-import Link from "next/link"; // Import Link for navigation
-import { toast, Toaster } from "react-hot-toast"; // Import toast and Toaster
-import useUserStore from "../stores/useUserStore"; // Import your Zustand store
+import Link from "next/link";
+import { toast, Toaster } from "react-hot-toast";
+import useUserStore from "../stores/useUserStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Search, Bell } from "lucide-react"; // Icons from lucide-react
+import { Button } from "./ui/button";
 
 const NavBar = () => {
   const { user, error, isLoading } = useUser();
-  const { setUser } = useUserStore(); // Get setUser from Zustand store
+  const { setUser } = useUserStore();
 
   useEffect(() => {
     const sendUserData = async () => {
@@ -31,127 +39,94 @@ const NavBar = () => {
           }
 
           const data = await response.json();
-
-          // Set the user data in Zustand store
           setUser(data.user);
-
-          toast.success("Welcome!"); // Show success message
-        } catch (error:any) {
-          toast.error(`Error sending user data:${error.message}`); // Show error message
+          toast.success("Welcome!");
+        } catch (error: any) {
+          toast.error(`Error sending user data: ${error.message}`);
         }
       }
     };
 
-    // Call the function to send user data after checking if user is loaded
     if (!isLoading && user) {
       sendUserData();
     }
-  }, [user, isLoading, setUser]); // Add setUser to the dependency array
-
+  }, [user, isLoading, setUser]);
 
   return (
     <>
-      <Toaster /> {/* Include Toaster here */}
-      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full">
-        <div className="container navbar mx-auto">
-          <div className=" navbar-start ">
-            <div className="dropdown">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h7"
-                  />
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-              >
-                <li>
+      <Toaster />
+      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full bg-white shadow-md">
+        <div className="container mx-auto flex items-center justify-between p-4">
+          {/* Left Section: Dropdown Menu and Topics Link */}
+          <div className="flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h7"
+                    />
+                  </svg>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
                   <Link href="/">Homepage</Link>
-                </li>
-                <li>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/portfolio">Portfolio</Link>
-                </li>
-                <li>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/about">About</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <Link href="/topics" className="btn btn-ghost">
-                Topics
-              </Link>
-            </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Link href="/topics" className="text-gray-700 hover:text-gray-900">
+              Topics
+            </Link>
           </div>
-          <div className="navbar-center">
-            <Link href='/' className="btn btn-ghost text-xl">LearnTube</Link>
-          </div>
-          <div className="navbar-end">
+
+          {/* Center Section: Logo */}
+          <Link href="/" className="text-2xl font-semibold text-gray-800">
+            LearnTube
+          </Link>
+
+          {/* Right Section: User Profile and Icons */}
+          <div className="flex items-center space-x-4">
             {error ? (
               <div>Error loading user data</div>
             ) : user ? (
-              <div className="flex items-center">
-                <span className="mr-2">Welcome, {user.name}!</span>
-                <Link href="/api/auth/logout" className="btn btn-ghost">
-                  Logout
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-700">Welcome, {user.name}!</span>
+                <Link href="/api/auth/logout">
+                  <Button variant="ghost">Logout</Button>
                 </Link>
               </div>
             ) : (
-              <div>
-                <Link href="/api/auth/login" className="btn btn-ghost">
-                  Login
-                </Link>
-              </div>
+              <Link href="/api/auth/login">
+                <Button variant="ghost">Login</Button>
+              </Link>
             )}
-            <button className="btn btn-ghost btn-circle">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-            <button className="btn btn-ghost btn-circle">
-              <div className="indicator">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-                <span className="badge badge-xs badge-primary indicator-item"></span>
-              </div>
-            </button>
+
+            {/* Search Icon */}
+            <Button variant="ghost" className="p-2">
+              <Search className="h-5 w-5 text-gray-700" />
+            </Button>
+
+            {/* Notifications Icon */}
+            <Button variant="ghost" className="p-2 relative">
+              <Bell className="h-5 w-5 text-gray-700" />
+              <span className="absolute top-0 right-0 inline-flex h-2 w-2 bg-red-600 rounded-full" />
+            </Button>
           </div>
         </div>
       </nav>
