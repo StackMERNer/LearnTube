@@ -13,7 +13,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
+import { BsFillCameraVideoFill } from "react-icons/bs";
+import clsx from "clsx";
 const LearningDashboard = () => {
   const { user } = useUserStore();
   const [userLearning, setUserLearning] = useState<
@@ -71,14 +72,22 @@ const LearningDashboard = () => {
   if (!user) return null;
 
   return (
-    <main className="p-5 mt-12">
+    <main className="">
       <h1 className="text-2xl font-bold mb-6 text-center">
         Your Learning Playlists
       </h1>
-      <div className="shadow rounded-lg p-4">
-        <Accordion type="single" collapsible>
+      <div className="p-4">
+        <Accordion
+          type="single"
+          collapsible
+          className="flex items-center gap-2 flex-col"
+        >
           {userLearning.map((learningObj) => (
-            <AccordionItem key={learningObj.playlist.playlistId} value={learningObj.playlist.playlistId}>
+            <AccordionItem
+              key={learningObj.playlist.playlistId}
+              value={learningObj.playlist.playlistId}
+              className={clsx("border px-2 rounded-lg w-full")}
+            >
               <AccordionTrigger className="text-xl font-medium flex items-center space-x-4">
                 <Image
                   height={60}
@@ -106,6 +115,7 @@ const LearningDashboard = () => {
                         alt={video.title}
                         className="w-12 h-12 object-cover rounded"
                       /> */}
+                      <BsFillCameraVideoFill size={18} />
                       <div
                         onClick={() =>
                           window.open(
