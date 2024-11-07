@@ -27,7 +27,7 @@ const PlaylistsAccordion = ({
     <Accordion
       type="single"
       collapsible
-      className="flex items-center gap-2 flex-col"
+      className="flex gap-2 flex-col"
     >
       {playlists.map((playlist) => (
         <AccordionItem
@@ -35,7 +35,7 @@ const PlaylistsAccordion = ({
           value={playlist.playlistId}
           className={clsx("border px-2 rounded-lg w-full")}
         >
-          <AccordionTrigger className="text-xl font-medium flex items-center space-x-4">
+          <AccordionTrigger className="text-xl font-medium border border-red-200">
             <Image
               height={60}
               width={60}
@@ -43,7 +43,7 @@ const PlaylistsAccordion = ({
               alt={playlist.title}
               className="w-16 h-16 object-cover rounded"
             />
-            <span>{playlist.title}</span>
+            <span className="text-left">{playlist.title}</span>
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-gray-600 mb-4">{playlist.description}</p>
