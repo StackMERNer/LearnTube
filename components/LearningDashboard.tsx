@@ -1,6 +1,5 @@
 "use client";
 
-import { IPlaylist } from "@/app/models/Playlist";
 import { ILearningInfo } from "@/app/models/UserLearning";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
@@ -15,10 +14,11 @@ import {
 } from "@/components/ui/accordion";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import clsx from "clsx";
+import { Playlist } from "@/types/playlist";
 const LearningDashboard = () => {
   const { user } = useUserStore();
   const [userLearning, setUserLearning] = useState<
-    { learningInfo: ILearningInfo; playlist: IPlaylist }[]
+    { learningInfo: ILearningInfo; playlist: Playlist }[]
   >([]);
   const [finishedVideos, setFinishedVideos] = useState<string[]>([]);
 

@@ -10,7 +10,7 @@ export interface Video {
 interface PlaylistBase {
   description: string;
   thumbnail: string;
-  videos: Video[]; // URL to the playlist thumbnail
+  videos: Video[];
   title: string;
   playlistId: string; // youtube playlist _id
 }
