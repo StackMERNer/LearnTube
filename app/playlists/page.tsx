@@ -12,7 +12,7 @@ const PlaylistsPage = () => {
     return <div>Error loading playlists: {error.message}</div>;
   }
   return (
-    <section className="container mx-auto py-2 px-4">
+    <section className="container mx-auto py-2">
       <div>{playlists && <PlaylistsAccordion playlists={playlists} />}</div>
     </section>
   );
