@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Search, Bell } from "lucide-react"; // Icons from lucide-react
+import { Search, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 
 const NavBar = () => {
@@ -23,9 +23,7 @@ const NavBar = () => {
         try {
           const response = await fetch("/api/users", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               auth0Id: user.sub,
               email: user.email,
@@ -34,9 +32,7 @@ const NavBar = () => {
             }),
           });
 
-          if (!response.ok) {
-            throw new Error("Failed to send user data");
-          }
+          if (!response.ok) throw new Error("Failed to send user data");
 
           const data = await response.json();
           setUser(data.user);
@@ -47,9 +43,7 @@ const NavBar = () => {
       }
     };
 
-    if (!isLoading && user) {
-      sendUserData();
-    }
+    if (!isLoading && user) sendUserData();
   }, [user, isLoading, setUser]);
 
   return (
@@ -57,11 +51,11 @@ const NavBar = () => {
       <Toaster />
       <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full border-b">
         <div className="container mx-auto flex items-center justify-between p-4">
-          {/* Left Section: Dropdown Menu and Topics Link */}
+          {/* Left Section: Logo and Dropdown Menu */}
           <div className="flex items-center space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-2">
+                <Button variant="ghost" className="p-2 md:hidden">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -90,23 +84,38 @@ const NavBar = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link href="/topics" className="text-gray-700 hover:text-gray-900">
-              Topics
+            <Link href="/" className="text-2xl font-semibold text-gray-800">
+              LearnTube
             </Link>
-          </div>
+            {/* Dropdown Menu for smaller screens */}
 
-          {/* Center Section: Logo */}
-          <Link href="/" className="text-2xl font-semibold text-gray-800">
-            LeanTube
-          </Link>
+            {/* Links for larger screens */}
+            <div className="hidden md:flex space-x-4">
+              <Link href="/" className="text-gray-700 hover:text-gray-900">
+                Homepage
+              </Link>
+              <Link
+                href="/portfolio"
+                className="text-gray-700 hover:text-gray-900"
+              >
+                Portfolio
+              </Link>
+              <Link href="/about" className="text-gray-700 hover:text-gray-900">
+                About
+              </Link>
+            </div>
+          </div>
 
           {/* Right Section: User Profile and Icons */}
           <div className="flex items-center space-x-4">
+            {/* User Login/Logout */}
             {error ? (
               <div>Error loading user data</div>
             ) : user ? (
               <div className="flex items-center space-x-2">
-                <span className="text-gray-700">Welcome, {user.name}!</span>
+                <span className="hidden sm:inline text-gray-700">
+                  Welcome, {user.name}!
+                </span>
                 <Link href="/api/auth/logout">
                   <Button variant="ghost">Logout</Button>
                 </Link>
@@ -117,12 +126,10 @@ const NavBar = () => {
               </Link>
             )}
 
-            {/* Search Icon */}
+            {/* Search and Notifications */}
             <Button variant="ghost" className="p-2">
               <Search className="h-5 w-5 text-gray-700" />
             </Button>
-
-            {/* Notifications Icon */}
             <Button variant="ghost" className="p-2 relative">
               <Bell className="h-5 w-5 text-gray-700" />
               <span className="absolute top-0 right-0 inline-flex h-2 w-2 bg-red-600 rounded-full" />
