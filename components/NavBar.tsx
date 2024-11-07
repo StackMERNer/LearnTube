@@ -52,7 +52,7 @@ const NavBar = () => {
   return (
     <>
       <Toaster /> {/* Include Toaster here */}
-      <nav className=" backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full">
+      <nav className="backdrop-blur-xl fixed top-0 right-0 left-0 z-10 w-full">
         <div className="container navbar mx-auto">
           <div className=" navbar-start ">
             <div className="dropdown">

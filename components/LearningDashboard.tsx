@@ -2,6 +2,7 @@
 import { IPlaylist } from "@/app/models/Playlist";
 import { ILearningInfo } from "@/app/models/UserLearning";
 import useUserStore from "@/stores/useUserStore";
+import clsx from "clsx";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -83,10 +84,12 @@ const LearningDashboard = () => {
         Your Learning Playlists
       </h1>
       <div className="w-full shadow rounded-lg p-4">
-        {userLearning.map((learningObj) => (
+        {userLearning.map((learningObj, index) => (
           <div
             key={learningObj.playlist.playlistId}
-            className="join-item border-base-300 border-b rounded-none"
+            className={clsx("join-item  rounded-none", {
+              "border-b border-base-300": userLearning.length - 1 !== index,
+            })}
           >
             {/* <input type="radio" name="playlist-accordion" /> */}
             <div
