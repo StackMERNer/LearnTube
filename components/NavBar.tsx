@@ -74,10 +74,10 @@ const NavBar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem asChild>
-                  <Link href="/">Homepage</Link>
+                  <Link href="/">Home</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/portfolio">Portfolio</Link>
+                  <Link href="/topics">Topics</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/about">About</Link>
@@ -92,13 +92,13 @@ const NavBar = () => {
             {/* Links for larger screens */}
             <div className="hidden md:flex space-x-4">
               <Link href="/" className="text-gray-700 hover:text-gray-900">
-                Homepage
+                Home
               </Link>
               <Link
-                href="/portfolio"
+                href="/topics"
                 className="text-gray-700 hover:text-gray-900"
               >
-                Portfolio
+                Topics
               </Link>
               <Link href="/about" className="text-gray-700 hover:text-gray-900">
                 About
