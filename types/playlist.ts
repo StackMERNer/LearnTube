@@ -8,11 +8,11 @@ export interface Video {
 }
 
 interface PlaylistBase {
-    description: string;
-    thumbnail: string; 
-    videos: Video[]; // URL to the playlist thumbnail
-    title: string;
-    playlistId: string; // youtube playlist _id
+  description: string;
+  thumbnail: string;
+  videos: Video[]; // URL to the playlist thumbnail
+  title: string;
+  playlistId: string; // youtube playlist _id
 }
 
 export interface Playlist extends PlaylistBase {
@@ -21,8 +21,6 @@ export interface Playlist extends PlaylistBase {
 }
 
 export interface PlaylistModel extends PlaylistBase {
-  topic: { type: mongoose.Schema.Types.ObjectId; ref: "Topic" };
+  topic: mongoose.Schema.Types.ObjectId;
   user: mongoose.Schema.Types.ObjectId;
-  title: string;
-  playlistId: string;
 }
